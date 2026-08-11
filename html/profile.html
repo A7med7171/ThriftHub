@@ -1,269 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | ThriftHub</title>
 
-    <title>Profile | ThriftHub</title>
-
-    <!-- Bootstrap -->
-
+    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Icons -->
-
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <!-- CSS -->
-
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/profile.css">
-
 </head>
-
 <body class="bg-light">
 
-<!-- NAVBAR -->
-
-<nav class="navbar navbar-expand-lg bg-white shadow-sm">
-
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top mb-4">
     <div class="container">
-
-        <a class="navbar-brand fw-bold text-success fs-3" href="index.html">
+        <!-- Logo -->
+        <a class="navbar-brand text-success me-4" href="index.html">
             ThriftHub
         </a>
 
-        <div class="d-flex gap-4 fs-4">
+        <!-- Search -->
+        <form class="d-none d-md-flex mx-auto w-50" onsubmit="event.preventDefault(); window.location.href='index.html?search=' + encodeURIComponent(this.querySelector('input').value);">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0">
+                    <i class="bi bi-search text-muted"></i>
+                </span>
+                <input type="text" class="form-control border-start-0 ps-0" placeholder="Search clothes, brands, sellers...">
+            </div>
+        </form>
 
-            <a href="favorites.html" class="text-dark">
+        <!-- Right Icons -->
+        <div class="d-flex align-items-center gap-2 gap-sm-3 ms-auto">
+            <a href="index.html" class="nav-icon-link" title="Home">
+                <i class="bi bi-house-door"></i>
+            </a>
+
+            <a href="favorites.html" class="nav-icon-link" title="Favorites">
                 <i class="bi bi-heart"></i>
+                <span id="fav-count" class="badge rounded-pill bg-danger badge-counter">0</span>
             </a>
 
-            <a href="cart.html" class="text-dark">
+            <a href="cart.html" class="nav-icon-link" title="Cart">
                 <i class="bi bi-cart3"></i>
+                <span id="cart-count" class="badge rounded-pill bg-success badge-counter">0</span>
             </a>
 
-            <a href="profile.html" class="text-success">
+            <a href="chat.html" class="nav-icon-link" title="Messages / DMs">
+                <i class="bi bi-chat-dots"></i>
+                <span id="dms-count" class="badge rounded-pill bg-primary badge-counter">2</span>
+            </a>
+
+            <a href="sell.html" class="btn btn-success btn-sell-nav d-none d-sm-inline-flex align-items-center gap-1">
+                <i class="bi bi-plus-circle-fill"></i> Sell
+            </a>
+
+            <a href="profile.html" class="nav-icon-link text-success" title="Profile">
                 <i class="bi bi-person-circle"></i>
             </a>
-
         </div>
-
     </div>
-
 </nav>
 
-<!-- COVER -->
+<!-- COVER PHOTO -->
+<div class="cover-photo bg-success" style="height: 160px; background: linear-gradient(135deg, #198754, #0d5231);"></div>
 
-<div class="cover-photo"></div>
-
-<!-- PROFILE -->
-
-<div class="container">
-
-    <div class="text-center">
-
-        <img
-                src="../images/uesrs/user1.jfif"
-                class="profile-image">
-
-        <h2 class="mt-3 fw-bold">
-            Ahmed Ali
-        </h2>
-
-        <p class="text-muted">
-
-            Computer Engineering Student
-
-        </p>
-
-        <p>
-
-            📍 Cairo, Egypt
-
-        </p>
-
+<!-- PROFILE CONTAINER -->
+<div class="container" style="margin-top: -60px;">
+    <div class="text-center mb-4">
+        <img id="profile-avatar" src="../images/uesrs/user1.jfif" class="profile-image shadow-sm border border-4 border-white rounded-circle" style="width: 120px; height: 120px; object-fit: cover;">
+        <h2 id="profile-name" class="mt-3 fw-bold m-0">Ahmed Ali</h2>
+        <p id="profile-bio" class="text-muted m-0 mt-1">Computer Engineering Student & Thrift Enthusiast</p>
+        <p class="text-secondary small mt-1"><i class="bi bi-geo-alt-fill text-danger me-1"></i> Cairo, Egypt</p>
     </div>
 
     <!-- STATS -->
-
-    <div class="row text-center mt-4">
-
+    <div class="row text-center bg-white p-3 rounded-4 shadow-sm mb-4 max-w-md mx-auto">
         <div class="col">
-
-            <h4>152</h4>
-
-            <p>Followers</p>
-
+            <h4 class="fw-bold m-0 text-success">152</h4>
+            <p class="text-muted small m-0">Followers</p>
         </div>
-
+        <div class="col border-start border-end">
+            <h4 class="fw-bold m-0 text-success">85</h4>
+            <p class="text-muted small m-0">Following</p>
+        </div>
         <div class="col">
-
-            <h4>85</h4>
-
-            <p>Following</p>
-
+            <h4 id="my-listings-count" class="fw-bold m-0 text-success">8</h4>
+            <p class="text-muted small m-0">Listings</p>
         </div>
-
-        <div class="col">
-
-            <h4>23</h4>
-
-            <p>Listings</p>
-
-        </div>
-
     </div>
 
     <!-- BUTTONS -->
-
-    <div class="text-center mt-3">
-
-        <button class="btn btn-success px-4">
-
-            Edit Profile
-
+    <div class="text-center mb-5">
+        <button class="btn btn-success px-4 rounded-pill fw-semibold me-2" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+            <i class="bi bi-pencil-square me-1"></i> Edit Profile
         </button>
-
-        <button class="btn btn-outline-dark px-4 ms-2">
-
-            Share Profile
-
+        <button class="btn btn-outline-dark px-4 rounded-pill fw-semibold" onclick="navigator.clipboard.writeText(window.location.href); alert('Profile link copied to clipboard!');">
+            <i class="bi bi-share me-1"></i> Share Profile
         </button>
-
-    </div>
-
-    <!-- ABOUT -->
-
-    <div class="card shadow-sm mt-5 p-4">
-
-        <h4>
-
-            About
-
-        </h4>
-
-        <p>
-
-            👕 Vintage Clothing Lover
-
-            <br>
-
-            👟 Sneaker Collector
-
-            <br>
-
-            📦 Fast Shipping
-
-        </p>
-
+        <a href="sell.html" class="btn btn-warning px-4 rounded-pill fw-bold text-dark ms-2">
+            <i class="bi bi-plus-circle me-1"></i> + New Listing
+        </a>
     </div>
 
     <!-- MY LISTINGS -->
-
-    <h3 class="mt-5 mb-4">
-
-        My Listings
-
-    </h3>
-
-    <div class="row g-4">
-
-        <div class="col-lg-3 col-md-4 col-sm-6">
-
-            <div class="card listing-card">
-
-                <img src="../images/products/product1.jfif">
-
-                <div class="card-body">
-
-                    <h6>Vintage Hoodie</h6>
-
-                    <h5 class="text-success">
-
-                        650 EGP
-
-                    </h5>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-3 col-md-4 col-sm-6">
-
-            <div class="card listing-card">
-
-                <img src="../images/products/product2.jfif">
-
-                <div class="card-body">
-
-                    <h6>Luxury Watch</h6>
-
-                    <h5 class="text-success">
-
-                        850 EGP
-
-                    </h5>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-3 col-md-4 col-sm-6">
-
-            <div class="card listing-card">
-
-                <img src="../images/products/product3.jfif">
-
-                <div class="card-body">
-
-                    <h6>Nike Sneakers</h6>
-
-                    <h5 class="text-success">
-
-                        1200 EGP
-
-                    </h5>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-3 col-md-4 col-sm-6">
-
-            <div class="card listing-card">
-
-                <img src="../images/products/product4.jfif">
-
-                <div class="card-body">
-
-                    <h6>Leather Jacket</h6>
-
-                    <h5 class="text-success">
-
-                        980 EGP
-
-                    </h5>
-
-                </div>
-
-            </div>
-
-        </div>
-
+    <h3 class="fw-bold mb-4"><i class="bi bi-grid-fill text-success me-2"></i>My Listed Items</h3>
+    <div id="profile-listings-grid" class="products-grid">
+        <!-- Rendered dynamically -->
     </div>
-
 </div>
 
-</body>
+<!-- EDIT PROFILE MODAL -->
+<div class="modal fade" id="editProfileModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4">
+            <div class="modal-header border-0 pb-0">
+                <h4 class="modal-title fw-bold">Edit Profile</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="edit-profile-form">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Display Name</label>
+                        <input type="text" id="edit-name" class="form-control rounded-3" value="Ahmed Ali" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Bio / Tagline</label>
+                        <input type="text" id="edit-bio" class="form-control rounded-3" value="Computer Engineering Student & Thrift Enthusiast" required>
+                    </div>
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-success btn-lg rounded-3 fw-bold">
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <p class="mb-0">© 2026 <strong>ThriftHub</strong> - Sustainable Second-hand Fashion Marketplace.</p>
+    </div>
+</footer>
+
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/app.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const products = getProducts();
+        const grid = document.getElementById("profile-listings-grid");
+        const countSpan = document.getElementById("my-listings-count");
+
+        if (countSpan) countSpan.innerText = products.length;
+
+        grid.innerHTML = "";
+        products.forEach(product => {
+            grid.innerHTML += `
+                <div class="product-card" onclick="window.location.href='product.html?id=${product.id}'">
+                    <div class="img-wrapper">
+                        <img src="${product.image}" alt="${product.title}">
+                        <span class="badge-category">${product.category}</span>
+                    </div>
+                    <div class="product-info">
+                        <h5>${product.title}</h5>
+                        <p class="price">${product.price} EGP</p>
+                        <button class="btn btn-outline-success w-100 rounded-pill mt-auto">View Item</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        // Edit Profile Form
+        const form = document.getElementById("edit-profile-form");
+        form.onsubmit = (e) => {
+            e.preventDefault();
+            const newName = document.getElementById("edit-name").value;
+            const newBio = document.getElementById("edit-bio").value;
+
+            document.getElementById("profile-name").innerText = newName;
+            document.getElementById("profile-bio").innerText = newBio;
+
+            bootstrap.Modal.getInstance(document.getElementById("editProfileModal")).hide();
+            alert("Profile updated successfully!");
+        };
+    });
+</script>
+</body>
 </html>
