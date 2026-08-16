@@ -1,3 +1,40 @@
+<?php
+require_once "../db.php";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $username = $_POST["name"];
+    $email = $_POST["email"];
+    $telephone = $_POST["telephone"];
+    $birthdate = $_POST["birthdate"];
+    $password = $_POST["password"];
+
+    $sql = "INSERT INTO user (username, email,telephone,birthdate , password)
+        VALUES (?, ?, ?,?,?)";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param(
+    "sssss",
+    $username,
+    $email,
+    $telephone,
+    $birthdate,
+    $password
+);
+
+if ($stmt->execute()) {
+
+    echo "Registration successful!";
+
+} else {
+
+    echo "ERROR: " . $stmt->error;
+
+}
+
+
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,19 +61,39 @@
                 <h4 class="fw-bold mb-1">Create an Account</h4>
                 <p class="text-muted small mb-4">Join Egypt's favorite thrift community</p>
 
-                <form id="registerForm">
+                <form id="registerForm" method="POST">
                     <div class="form-floating mb-3 text-start">
-                        <input type="text" class="form-control rounded-3" id="nameInput" placeholder="Full Name" value="Ahmed Ali" required>
+                        <input name="name" type="text" class="form-control rounded-3" id="nameInput" placeholder="Full Name"  required>
                         <label for="nameInput">Full Name</label>
                     </div>
 
                     <div class="form-floating mb-3 text-start">
-                        <input type="email" class="form-control rounded-3" id="emailInput" placeholder="name@example.com" value="ahmed@thrifthub.com" required>
+                        <input name="email" type="email" class="form-control rounded-3" id="emailInput" placeholder="name@example.com" value="ahmed@thrifthub.com" required>
                         <label for="emailInput">Email address</label>
                     </div>
+                    <div class="form-floating mb-3 text-start">
+    <input type="text"
+           class="form-control rounded-3"
+           id="telephoneInput"
+           name="telephone"
+           placeholder="Telephone"
+           required>
+
+    <label for="telephoneInput">Telephone</label>
+</div>
+
+<div class="form-floating mb-3 text-start">
+    <input type="date"
+           class="form-control rounded-3"
+           id="birthdateInput"
+           name="birthdate"
+           required>
+
+    <label for="birthdateInput">Birthdate</label>
+</div>
 
                     <div class="form-floating mb-3 text-start">
-                        <input type="password" class="form-control rounded-3" id="passwordInput" placeholder="Password" required value="12345678">
+                        <input name="password" type="password" class="form-control rounded-3" id="passwordInput" placeholder="Password" required value="12345678">
                         <label for="passwordInput">Create Password</label>
                     </div>
 
@@ -61,13 +118,6 @@
 </div>
 
 <script src="../js/app.js"></script>
-<script>
-    document.getElementById("registerForm").onsubmit = function(e) {
-        e.preventDefault();
-        // Set onboarding flag for newly registered user
-        localStorage.setItem("showOnboarding", "true");
-        window.location.href = "index.html";
-    };
-</script>
+
 </body>
 </html>

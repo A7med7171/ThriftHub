@@ -1,3 +1,56 @@
+<?php
+
+session_start();
+
+require_once "../db.php";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $email = $_POST["email"];
+    $password = $_POST["password"];
+
+    // Find the user using the email
+    $sql = "SELECT * FROM user WHERE email = ?";
+
+    $stmt = $conn->prepare($sql);
+
+    $stmt->bind_param("s", $email);
+
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+
+    // Did we find the user?
+    if ($result->num_rows == 1) {
+
+        $user = $result->fetch_assoc();
+
+        // Does the password match?
+        if (password_verify($password, $user["password"])) {
+
+            // Create session
+            $_SESSION["user_id"] = $user["id"];
+            $_SESSION["username"] = $user["username"];
+            $_SESSION["email"] = $user["email"];
+
+            // Login successful
+            header("Location: index.php");
+            exit();
+
+        } else {
+
+            echo "Wrong password!";
+
+        }
+
+    } else {
+
+        echo "User not found!";
+
+    }
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,14 +77,14 @@
                 <h4 class="fw-bold mb-1">Welcome Back!</h4>
                 <p class="text-muted small mb-4">Sign in to buy and sell second-hand fashion</p>
 
-                <form onsubmit="event.preventDefault(); alert('Signed in successfully!'); window.location.href='index.html';">
+                <form method="POST">
                     <div class="form-floating mb-3 text-start">
-                        <input type="email" class="form-control rounded-3" id="emailInput" placeholder="name@example.com" value="ahmed@thrifthub.com" required>
+                        <input name = "email" type="email" class="form-control rounded-3" id="emailInput" placeholder="name@example.com" value="ahmed@thrifthub.com" required>
                         <label for="emailInput">Email address</label>
                     </div>
 
                     <div class="form-floating mb-3 text-start">
-                        <input type="password" class="form-control rounded-3" id="passwordInput" placeholder="Password" value="password123" required>
+                        <input name = "password" type="password" class="form-control rounded-3" id="passwordInput" placeholder="Password" value="password123" required>
                         <label for="passwordInput">Password</label>
                     </div>
 
@@ -49,7 +102,7 @@
                 </form>
 
                 <p class="text-muted small">
-                    Don't have an account? <a href="register.html" class="text-success fw-bold">Create an Account</a>
+                    Don't have an account? <a href="register.php" class="text-success fw-bold">Create an Account</a>
                 </p>
             </div>
         </div>
