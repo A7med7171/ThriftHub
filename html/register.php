@@ -6,7 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST["email"];
     $telephone = $_POST["telephone"];
     $birthdate = $_POST["birthdate"];
-    $password = $_POST["password"];
+    $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
 
     $sql = "INSERT INTO user (username, email,telephone,birthdate , password)
         VALUES (?, ?, ?,?,?)";
@@ -110,7 +110,7 @@ if ($stmt->execute()) {
                 </form>
 
                 <p class="text-muted small">
-                    Already have an account? <a href="login.html" class="text-success fw-bold">Sign In</a>
+                    Already have an account? <a href="login.php" class="text-success fw-bold">Sign In</a>
                 </p>
             </div>
         </div>

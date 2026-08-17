@@ -1,3 +1,22 @@
+
+<?php 
+session_start(); 
+if (!isset($_SESSION["user_id"])) {
+    header("Location: login.php");
+    exit();
+}
+require_once "../db.php";
+$user_id = $_SESSION["user_id"]; 
+$sql = "SELECT * FROM post WHERE USER_ID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,7 +91,9 @@
 <div class="container" style="margin-top: -60px;">
     <div class="text-center mb-4">
         <img id="profile-avatar" src="../images/uesrs/user1.jfif" class="profile-image shadow-sm border border-4 border-white rounded-circle" style="width: 120px; height: 120px; object-fit: cover;">
-        <h2 id="profile-name" class="mt-3 fw-bold m-0">Ahmed Ali</h2>
+       <h2 class="mt-3 fw-bold m-0">
+    <?php echo htmlspecialchars($_SESSION["username"]); ?>
+</h2>
         <p id="profile-bio" class="text-muted m-0 mt-1">Computer Engineering Student & Thrift Enthusiast</p>
         <p class="text-secondary small mt-1"><i class="bi bi-geo-alt-fill text-danger me-1"></i> Cairo, Egypt</p>
     </div>
@@ -88,7 +109,9 @@
             <p class="text-muted small m-0">Following</p>
         </div>
         <div class="col">
-            <h4 id="my-listings-count" class="fw-bold m-0 text-success">8</h4>
+            <h4 class="fw-bold m-0 text-success">
+    <?php echo $result->num_rows; ?>
+</h4>
             <p class="text-muted small m-0">Listings</p>
         </div>
     </div>
@@ -109,8 +132,55 @@
     <!-- MY LISTINGS -->
     <h3 class="fw-bold mb-4"><i class="bi bi-grid-fill text-success me-2"></i>My Listed Items</h3>
     <div id="profile-listings-grid" class="products-grid">
-        <!-- Rendered dynamically -->
-    </div>
+
+    <?php if ($result->num_rows > 0): ?>
+
+        <?php while ($post = $result->fetch_assoc()): ?>
+
+            <div class="product-card">
+
+                <div class="img-wrapper">
+
+                    <img
+                        src="<?php echo htmlspecialchars($post["IMAGE_URL"]); ?>"
+                        alt="<?php echo htmlspecialchars($post["TITLE"]); ?>"
+                    >
+
+                    <span class="badge-category">
+                        <?php echo htmlspecialchars($post["CATEGORY"]); ?>
+                    </span>
+
+                </div>
+
+                <div class="product-info">
+
+                    <h5>
+                        <?php echo htmlspecialchars($post["TITLE"]); ?>
+                    </h5>
+
+                    <p class="price">
+                        <?php echo htmlspecialchars($post["PRICE"]); ?> EGP
+                    </p>
+
+                    <button class="btn btn-outline-success w-100 rounded-pill mt-auto">
+                        View Item
+                    </button>
+
+                </div>
+
+            </div>
+
+        <?php endwhile; ?>
+
+    <?php else: ?>
+
+        <p class="text-muted">
+            You haven't posted anything yet.
+        </p>
+
+    <?php endif; ?>
+
+</div>
 </div>
 
 <!-- EDIT PROFILE MODAL -->
@@ -153,29 +223,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../js/app.js"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const products = getProducts();
-        const grid = document.getElementById("profile-listings-grid");
-        const countSpan = document.getElementById("my-listings-count");
-
-        if (countSpan) countSpan.innerText = products.length;
-
-        grid.innerHTML = "";
-        products.forEach(product => {
-            grid.innerHTML += `
-                <div class="product-card" onclick="window.location.href='product.html?id=${product.id}'">
-                    <div class="img-wrapper">
-                        <img src="${product.image}" alt="${product.title}">
-                        <span class="badge-category">${product.category}</span>
-                    </div>
-                    <div class="product-info">
-                        <h5>${product.title}</h5>
-                        <p class="price">${product.price} EGP</p>
-                        <button class="btn btn-outline-success w-100 rounded-pill mt-auto">View Item</button>
-                    </div>
-                </div>
-            `;
-        });
+    
 
         // Edit Profile Form
         const form = document.getElementById("edit-profile-form");

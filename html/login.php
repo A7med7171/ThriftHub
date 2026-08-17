@@ -9,8 +9,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST["email"];
     $password = $_POST["password"];
 
-    // Find the user using the email
-    $sql = "SELECT * FROM user WHERE email = ?";
+    // Find the user by email
+    $sql = "SELECT id, username, email, `password` AS password
+            FROM user
+            WHERE email = ?";
 
     $stmt = $conn->prepare($sql);
 
@@ -20,12 +22,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $result = $stmt->get_result();
 
-    // Did we find the user?
+    // Check if user exists
     if ($result->num_rows == 1) {
 
         $user = $result->fetch_assoc();
 
-        // Does the password match?
+        // Check the password
         if (password_verify($password, $user["password"])) {
 
             // Create session
@@ -48,6 +50,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "User not found!";
 
     }
+
+    $stmt->close();
 }
 
 ?>

@@ -1,3 +1,68 @@
+<?php
+
+session_start();
+
+require_once "../db.php";
+
+// Make sure the user is logged in
+if (!isset($_SESSION["user_id"])) {
+
+    header("Location: login.php");
+    exit();
+
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    // Get the logged-in user's ID
+    $user_id = $_SESSION["user_id"];
+
+    // Get data from the form
+    $image_url = $_POST["image"];
+    $title = $_POST["title"];
+    $category = $_POST["category"];
+    $price = $_POST["price"];
+    $description = $_POST["description"];
+    $size = $_POST["size"];
+    $condition = $_POST["condition"];
+
+    // Insert the post into the post table
+    $sql = "INSERT INTO post
+            (USER_ID, TITLE, CATEGORY, PRICE, SIZE, CONDITION_STATE, DESCRIPTION, IMAGE_URL)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+    // Prepare SQL
+    $stmt = $conn->prepare($sql);
+
+    // Connect the values to the ?
+    $stmt->bind_param(
+        "sdssssss",
+        $user_id,
+        $title,
+        $category,
+        $price,
+        $size,
+        $condition,
+        $description,
+        $image_url
+    );
+
+    // Execute SQL
+    if ($stmt->execute()) {
+
+        echo "Post created successfully!";
+
+    } else {
+
+        echo "ERROR: " . $stmt->error;
+
+    }
+
+    $stmt->close();
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,7 +88,7 @@
         </a>
 
         <!-- Search -->
-        <form class="d-none d-md-flex mx-auto w-50" onsubmit="event.preventDefault(); window.location.href='index.html?search=' + encodeURIComponent(this.querySelector('input').value);">
+        <form class="d-none d-md-flex mx-auto w-50" onsubmit=" window.location.href='index.html?search=' + encodeURIComponent(this.querySelector('input').value);">
             <div class="input-group">
                 <span class="input-group-text bg-white border-end-0">
                     <i class="bi bi-search text-muted"></i>
@@ -77,18 +142,18 @@
                     <p class="text-muted mt-1">Turn your pre-loved clothes into cash on ThriftHub</p>
                 </div>
 
-                <form id="sell-form">
+                <form id="sell-form" method="post" >
                     <!-- Title -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Item Title *</label>
-                        <input type="text" id="sell-title" class="form-control form-control-lg rounded-3" placeholder="e.g. Vintage Nike Windbreaker Hoodie" required>
+                        <input name= "title" type="text" id="sell-title" class="form-control form-control-lg rounded-3" placeholder="e.g. Vintage Nike Windbreaker Hoodie" required>
                     </div>
 
                     <!-- Category & Price -->
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Category *</label>
-                            <select id="sell-category" class="form-select form-select-lg rounded-3" required>
+                            <select name= "category" id="sell-category" class="form-select form-select-lg rounded-3" required>
                                 <option value="" selected disabled>Select category</option>
                                 <option value="Hoodies">Hoodies & Sweatshirts</option>
                                 <option value="Sneakers">Sneakers & Shoes</option>
@@ -100,7 +165,7 @@
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Price (EGP) *</label>
                             <div class="input-group input-group-lg">
-                                <input type="number" id="sell-price" class="form-control rounded-start-3" placeholder="650" min="10" required>
+                                <input name="price"  type="number" id="sell-price" class="form-control rounded-start-3" placeholder="650" min="10" required>
                                 <span class="input-group-text bg-light text-muted">EGP</span>
                             </div>
                         </div>
@@ -110,7 +175,7 @@
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Size *</label>
-                            <select id="sell-size" class="form-select form-select-lg rounded-3" required>
+                            <select name="size" id="sell-size" class="form-select form-select-lg rounded-3" required>
                                 <option value="M" selected>Medium (M)</option>
                                 <option value="S">Small (S)</option>
                                 <option value="L">Large (L)</option>
@@ -121,7 +186,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Condition *</label>
-                            <select id="sell-condition" class="form-select form-select-lg rounded-3" required>
+                            <select  name="condition" id="sell-condition" class="form-select form-select-lg rounded-3" required>
                                 <option value="New with tags">New with tags</option>
                                 <option value="Like New" selected>Like New</option>
                                 <option value="Excellent">Excellent</option>
@@ -133,7 +198,7 @@
                     <!-- Image URL / File -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Product Image URL / Select Image *</label>
-                        <input type="text" id="sell-image" class="form-control form-control-lg rounded-3" placeholder="../images/products/product1.jfif or paste image URL" required>
+                        <input name = "image"  type="text" id="sell-image" class="form-control form-control-lg rounded-3" placeholder="../images/products/product1.jfif or paste image URL" required>
                         <small class="text-muted">Tip: You can use local paths like <code>../images/products/product1.jfif</code> or any image URL.</small>
                     </div>
 
@@ -148,7 +213,7 @@
                     <!-- Description -->
                     <div class="mb-4">
                         <label class="form-label fw-semibold">Description *</label>
-                        <textarea id="sell-desc" class="form-control rounded-3" rows="4" placeholder="Describe the item, fit, fabric, any flaws, etc." required></textarea>
+                        <textarea name= "description" id="sell-desc" class="form-control rounded-3" rows="4" placeholder="Describe the item, fit, fabric, any flaws, etc." required></textarea>
                     </div>
 
                     <!-- Submit -->
@@ -173,6 +238,6 @@
 <!-- JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../js/app.js"></script>
-<script src="../js/sell.js"></script>
+<!-- <script src="../js/sell.js"></script> -->
 </body>
 </html>
