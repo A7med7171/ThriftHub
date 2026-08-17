@@ -91,7 +91,7 @@ $result = $stmt->get_result();
 <div class="container" style="margin-top: -60px;">
     <div class="text-center mb-4">
         <img id="profile-avatar" src="../images/uesrs/user1.jfif" class="profile-image shadow-sm border border-4 border-white rounded-circle" style="width: 120px; height: 120px; object-fit: cover;">
-       <h2 class="mt-3 fw-bold m-0">
+<h2 id="profile-name" class="mt-3 fw-bold m-0">
     <?php echo htmlspecialchars($_SESSION["username"]); ?>
 </h2>
         <p id="profile-bio" class="text-muted m-0 mt-1">Computer Engineering Student & Thrift Enthusiast</p>
@@ -223,22 +223,24 @@ $result = $stmt->get_result();
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../js/app.js"></script>
 <script>
-    
+    // Edit Profile Form
+    const form = document.getElementById("edit-profile-form");
 
-        // Edit Profile Form
-        const form = document.getElementById("edit-profile-form");
-        form.onsubmit = (e) => {
-            e.preventDefault();
-            const newName = document.getElementById("edit-name").value;
-            const newBio = document.getElementById("edit-bio").value;
+    form.onsubmit = (e) => {
+        e.preventDefault();
 
-            document.getElementById("profile-name").innerText = newName;
-            document.getElementById("profile-bio").innerText = newBio;
+        const newName = document.getElementById("edit-name").value;
+        const newBio = document.getElementById("edit-bio").value;
 
-            bootstrap.Modal.getInstance(document.getElementById("editProfileModal")).hide();
-            alert("Profile updated successfully!");
-        };
-    });
+        document.getElementById("profile-name").innerText = newName;
+        document.getElementById("profile-bio").innerText = newBio;
+
+        bootstrap.Modal.getInstance(
+            document.getElementById("editProfileModal")
+        ).hide();
+
+        alert("Profile updated successfully!");
+    };
 </script>
 </body>
 </html>
