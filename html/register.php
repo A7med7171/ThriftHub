@@ -3,12 +3,14 @@ require_once "../db.php";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $username = $_POST["name"];
-    $email = $_POST["email"];
+    $email = $_POST["useremail"];
     $telephone = $_POST["telephone"];
     $birthdate = $_POST["birthdate"];
     $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
 
-    $sql = "INSERT INTO user (username, email,telephone,birthdate , password)
+
+
+    $sql = "INSERT INTO `user` (`username`,`email`,`telephone`,`password`,`birthdate`)
         VALUES (?, ?, ?,?,?)";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param(
@@ -16,18 +18,32 @@ $stmt->bind_param(
     $username,
     $email,
     $telephone,
-    $birthdate,
-    $password
+    $password,
+    $birthdate
+
 );
 
+$sql = "SELECT * FROM `user` WHERE email = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $email);
+
 if ($stmt->execute()) {
+    $result = $stmt->get_result();
+    // $user = mysqli_fetch_all($result , MYSQLI_ASSOC);
+    $user = $result->fetch_assoc();
+    echo "<pre>";
+    print_r($user);
+    echo "</pre>";
 
-    echo "Registration successful!";
+    // $count = mysqli_num_rows($result);
 
+    // if ($count > 0) {
+    //     echo "Email already exists!";
+    // } else {
+    //     echo "Registration successful!";
+    // }
 } else {
-
     echo "ERROR: " . $stmt->error;
-
 }
 
 
@@ -68,7 +84,7 @@ if ($stmt->execute()) {
                     </div>
 
                     <div class="form-floating mb-3 text-start">
-                        <input name="email" type="email" class="form-control rounded-3" id="emailInput" placeholder="name@example.com" value="ahmed@thrifthub.com" required>
+                        <input name="useremail" type="email" class="form-control rounded-3" id="emailInput" placeholder="name@example.com" value="ahmed@thrifthub.com" required>
                         <label for="emailInput">Email address</label>
                     </div>
                     <div class="form-floating mb-3 text-start">

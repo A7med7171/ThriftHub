@@ -1,3 +1,25 @@
+<?php
+
+use LDAP\Result;
+
+session_start(); 
+if (!isset($_SESSION["user_id"])) {
+    header("Location: login.php");
+    exit();
+}
+require_once "../db.php";
+$user_id = $_SESSION["user_id"]; 
+$sql = "SELECT * FROM post WHERE USER_ID <> ?  Order by CREATED_AT desc  ";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+// echo "<pre>";
+// print_r($result->fetch_all(MYSQLI_ASSOC));
+// echo "</pre>";
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,7 +41,7 @@
 <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top mb-4">
     <div class="container">
         <!-- Logo -->
-        <a class="navbar-brand text-success me-4" href="index.html">
+        <a class="navbar-brand text-success me-4" href="index.php">
             ThriftHub
         </a>
 
@@ -35,30 +57,30 @@
 
         <!-- Right Navigation Icons -->
         <div class="d-flex align-items-center gap-2 gap-sm-3 ms-auto">
-            <a href="index.html" class="nav-icon-link text-success" title="Home">
+            <a href="index.php" class="nav-icon-link text-success" title="Home">
                 <i class="bi bi-house-door-fill"></i>
             </a>
 
-            <a href="favorites.html" class="nav-icon-link" title="Favorites">
+            <a href="favorites.php" class="nav-icon-link" title="Favorites">
                 <i class="bi bi-heart"></i>
                 <span id="fav-count" class="badge rounded-pill bg-danger badge-counter">0</span>
             </a>
 
-            <a href="cart.html" class="nav-icon-link" title="Cart">
+            <a href="cart.php" class="nav-icon-link" title="Cart">
                 <i class="bi bi-cart3"></i>
                 <span id="cart-count" class="badge rounded-pill bg-success badge-counter">0</span>
             </a>
 
-            <a href="chat.html" class="nav-icon-link" title="Messages / DMs">
+            <a href="chat.php" class="nav-icon-link" title="Messages / DMs">
                 <i class="bi bi-chat-dots"></i>
                 <span id="dms-count" class="badge rounded-pill bg-primary badge-counter">2</span>
             </a>
 
-            <a href="sell.html" class="btn btn-success btn-sell-nav d-none d-sm-inline-flex align-items-center gap-1">
+            <a href="sell.php" class="btn btn-success btn-sell-nav d-none d-sm-inline-flex align-items-center gap-1">
                 <i class="bi bi-plus-circle-fill"></i> Sell
             </a>
 
-            <a href="profile.html" class="nav-icon-link" title="Profile">
+            <a href="profile.php" class="nav-icon-link" title="Profile">
                 <i class="bi bi-person-circle"></i>
             </a>
         </div>
@@ -117,8 +139,62 @@
 
     <!-- Grid Container -->
     <div id="feed" class="products-grid">
-        <!-- Rendered dynamically via js/home.js -->
-    </div>
+           <?php if ($result->num_rows > 0): ?>
+
+        <?php
+        //  while ($post = $result->fetch_assoc()): 
+            foreach($result->fetch_all(MYSQLI_ASSOC) as $post):
+            ?>
+
+            <div class="product-card">
+
+                <div class="img-wrapper">
+
+                    <img
+                        src="<?php echo htmlspecialchars($post["IMAGE_URL"]); ?>"
+                        alt="<?php echo htmlspecialchars($post["TITLE"]); ?>"
+                    >
+
+                    <span class="badge-category">
+                        <?php echo htmlspecialchars($post["CATEGORY"]); ?>
+                    </span>
+
+                </div>
+
+                <div class="product-info">
+
+                    <h5>
+                        <?php echo htmlspecialchars($post["TITLE"]); ?>
+                    </h5>
+
+                    <p class="price">
+                        <?php echo htmlspecialchars($post["PRICE"]); ?> EGP
+                    </p>
+
+                    <button class="btn btn-outline-success w-100 rounded-pill mt-auto">
+                        View Item
+                    </button>
+
+                </div>
+
+            </div>
+
+        <?php
+        endforeach;
+        //  endwhile;
+         ?>
+
+    <?php else: ?>
+
+        <p class="text-muted">
+            no new posts 
+        </p>
+
+    <?php endif; ?>
+
+</div>
+</div>
+    
 </section>
 
 <!-- ================= COOL WELCOME ONBOARDING MODAL ================= -->
@@ -223,7 +299,7 @@
 
 <!-- Bootstrap & App JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="../js/app.js"></script>
-<script src="../js/home.js"></script>
+<!-- <script src="../js/app.js"></script> -->
+<!-- <script src="../js/home.js"></script> -->
 </body>
 </html>

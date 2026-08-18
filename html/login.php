@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST["password"];
 
     // Find the user by email
-    $sql = "SELECT id, username, email, `password` AS password
+    $sql = "SELECT `id`, `username`, `email`, `password` AS password
             FROM user
             WHERE email = ?";
 
@@ -75,7 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-5">
             <div class="bg-white p-4 p-sm-5 rounded-4 shadow-sm text-center">
-                <a href="index.html" class="navbar-brand text-success fs-2 fw-bold d-block mb-3">
+                <a href="index.php" class="navbar-brand text-success fs-2 fw-bold d-block mb-3">
                     ThriftHub
                 </a>
                 <h4 class="fw-bold mb-1">Welcome Back!</h4>

@@ -14,6 +14,9 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 
+// POST::where('user_id' , $user_id)->get();
+// var_dump($result);
+// var_dump($result->fetch_all(MYSQLI_ASSOC));
 ?>
 
 
@@ -135,7 +138,10 @@ $result = $stmt->get_result();
 
     <?php if ($result->num_rows > 0): ?>
 
-        <?php while ($post = $result->fetch_assoc()): ?>
+        <?php
+        //  while ($post = $result->fetch_assoc()): 
+            foreach($result->fetch_all(MYSQLI_ASSOC) as $post):
+            ?>
 
             <div class="product-card">
 
@@ -170,7 +176,10 @@ $result = $stmt->get_result();
 
             </div>
 
-        <?php endwhile; ?>
+        <?php
+        endforeach;
+        //  endwhile;
+         ?>
 
     <?php else: ?>
 
